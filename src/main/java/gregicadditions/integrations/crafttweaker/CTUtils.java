@@ -20,12 +20,20 @@ import net.minecraftforge.fluids.FluidStack;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
-
+import gregtech.api.unification.material.type.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import gregicadditions.GAValues;
+import gregtech.common.pipelike.cable.WireProperties;
+
+
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static gregicadditions.GAMaterials.addCableAboveGTCELimit;
+import static gregicadditions.GAMaterials.ignoreCable;
+import static gregicadditions.GAUtility.getTierByVoltage;
 
 
 @ZenClass("mods.gtadditions.recipe.Utils")
@@ -142,5 +150,48 @@ public class CTUtils {
 
         CraftTweakerAPI.logInfo("Added Reservoir Type: " + rFluid);
     }
+    //TODO
+    //figure out what method fixes the tooltips
+    @ZenMethod("AboveGTCELimit")
+    public static void AboveGTCELimit(Material m, long voltage, int amperage, int lossPerBlock) {
+        String volt = String.valueOf(getTierByVoltage(voltage));
+        if (m instanceof IngotMaterial) {
+        switch(volt) {
+            case("9"):
+                ((IngotMaterial) m).setCableProperties(GAValues.V[GAValues.UHV],amperage,lossPerBlock);
+                ignoreCable((IngotMaterial) m);
+                addCableAboveGTCELimit((IngotMaterial) m, new WireProperties(GAValues.V[GAValues.UHV],amperage,lossPerBlock));
 
+            break;
+            case("10"):
+                ((IngotMaterial) m).setCableProperties(GAValues.V[GAValues.UEV],amperage,lossPerBlock);
+                ignoreCable((IngotMaterial) m);
+                addCableAboveGTCELimit((IngotMaterial) m, new WireProperties(GAValues.V[GAValues.UEV],amperage,lossPerBlock));
+                break;
+            case("11"):
+                ((IngotMaterial) m).setCableProperties(GAValues.V[GAValues.UIV],amperage,lossPerBlock);
+                ignoreCable((IngotMaterial) m);
+                addCableAboveGTCELimit((IngotMaterial) m, new WireProperties(GAValues.V[GAValues.UIV],amperage,lossPerBlock));
+                break;
+            case("12"):
+                ((IngotMaterial) m).setCableProperties(GAValues.V[GAValues.UMV],amperage,lossPerBlock);
+                ignoreCable((IngotMaterial) m);
+                addCableAboveGTCELimit((IngotMaterial) m, new WireProperties(GAValues.V[GAValues.UMV],amperage,lossPerBlock));
+                break;
+            case("13"):
+                ((IngotMaterial) m).setCableProperties(GAValues.V[GAValues.UXV],amperage,lossPerBlock);
+                ignoreCable((IngotMaterial) m);
+                addCableAboveGTCELimit((IngotMaterial) m, new WireProperties(GAValues.V[GAValues.UXV],amperage,lossPerBlock));
+                break;
+            case("14"):
+                ((IngotMaterial) m).setCableProperties(GAValues.V[GAValues.MAX],amperage,lossPerBlock);
+                ignoreCable(m);
+                addCableAboveGTCELimit((IngotMaterial) m, new WireProperties(GAValues.V[GAValues.MAX],amperage,lossPerBlock));
+                break;
+            default:
+                CraftTweakerAPI.logError("long '" + voltage + "' voltage does not match");
+        }
+        }
+
+    }
 }
